@@ -1,583 +1,489 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulator OTP WhatsApp - EDUKASI SAJA</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        
-        .container {
-            width: 100%;
-            max-width: 500px;
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .logo {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-        
-        h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            opacity: 0.9;
-            font-size: 16px;
-        }
-        
-        .warning-box {
-            background: #fff3cd;
-            border-left: 5px solid #ffc107;
-            margin: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            color: #856404;
-        }
-        
-        .warning-box strong {
-            display: block;
-            margin-bottom: 5px;
-        }
-        
-        .content {
-            padding: 30px;
-        }
-        
-        .step {
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .step-number {
-            display: inline-block;
-            background: #25D366;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 30px;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-        
-        .step-title {
-            font-size: 20px;
-            color: #333;
-            margin-bottom: 15px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
-        
-        .phone-input {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .country-code {
-            flex: 0 0 80px;
-        }
-        
-        select, input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-        
-        select:focus, input:focus {
-            outline: none;
-            border-color: #25D366;
-        }
-        
-        .btn {
-            width: 100%;
-            padding: 18px;
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .btn:hover {
-            background: #1da851;
-        }
-        
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .otp-display {
-            text-align: center;
-            padding: 30px;
-            background: #f8f9fa;
-            border-radius: 15px;
-            margin-top: 20px;
-            border: 2px dashed #25D366;
-            display: none;
-        }
-        
-        .otp-label {
-            color: #666;
-            margin-bottom: 10px;
-            font-size: 16px;
-        }
-        
-        .otp-code {
-            font-size: 48px;
-            font-weight: bold;
-            letter-spacing: 15px;
-            color: #25D366;
-            margin: 20px 0;
-            font-family: monospace;
-        }
-        
-        .timer {
-            font-size: 18px;
-            color: #666;
-            margin: 15px 0;
-        }
-        
-        .timer-number {
-            font-weight: bold;
-            color: #ff6b6b;
-        }
-        
-        .verification-box {
-            margin-top: 20px;
-            padding: 20px;
-            background: #e8f5e9;
-            border-radius: 10px;
-            display: none;
-        }
-        
-        .verification-success {
-            color: #2e7d32;
-            font-weight: bold;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-        
-        .simulation-log {
-            margin-top: 30px;
-            padding: 20px;
-            background: #f5f5f5;
-            border-radius: 10px;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        
-        .log-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-        }
-        
-        .log-entry {
-            padding: 8px;
-            border-bottom: 1px solid #ddd;
-            font-size: 14px;
-            font-family: monospace;
-        }
-        
-        .log-success {
-            color: #2e7d32;
-        }
-        
-        .log-error {
-            color: #c62828;
-        }
-        
-        .log-info {
-            color: #1565c0;
-        }
-        
-        .footer {
-            text-align: center;
-            padding: 20px;
-            color: #777;
-            font-size: 14px;
-            border-top: 1px solid #eee;
-            background: #f8f9fa;
-        }
-        
-        @media (max-width: 600px) {
-            .phone-input {
-                flex-direction: column;
-            }
-            
-            .otp-code {
-                font-size: 36px;
-                letter-spacing: 10px;
-            }
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Real - OTP Dev API</title>
+    <style>
+        /* (Copy style dari HTML lo sebelumnya, biar sama) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .logo {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .warning-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            color: #856404;
+            font-size: 14px;
+        }
+        .content {
+            padding: 30px;
+        }
+        .step {
+            margin-bottom: 30px;
+        }
+        .step-title {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+        .phone-input {
+            display: flex;
+            gap: 10px;
+        }
+        .country-code {
+            flex: 0 0 100px;
+        }
+        select, input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: #25D366;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #1da851;
+        }
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .otp-display {
+            text-align: center;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 2px dashed #25D366;
+            display: none;
+        }
+        .otp-label {
+            color: #666;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .otp-code {
+            font-size: 48px;
+            font-weight: bold;
+            letter-spacing: 15px;
+            color: #25D366;
+            margin: 20px 0;
+            font-family: monospace;
+        }
+        .timer {
+            font-size: 18px;
+            color: #666;
+            margin: 15px 0;
+        }
+        .timer-number {
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+        .verification-box {
+            margin-top: 20px;
+            padding: 20px;
+            background: #e8f5e9;
+            border-radius: 10px;
+            display: none;
+        }
+        .verification-success {
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .simulation-log {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .log-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .log-entry {
+            padding: 8px;
+            border-bottom: 1px solid #ddd;
+            font-size: 14px;
+            font-family: monospace;
+        }
+        .log-success { color: #2e7d32; }
+        .log-error { color: #c62828; }
+        .log-info { color: #1565c0; }
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #777;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            background: #f8f9fa;
+        }
+        @media (max-width: 600px) {
+            .phone-input { flex-direction: column; }
+            .otp-code { font-size: 36px; letter-spacing: 10px; }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <div class="logo">
-                <i class="fab fa-whatsapp"></i>
-            </div>
-            <h1>Simulator OTP WhatsApp</h1>
-            <p class="subtitle">Untuk tujuan edukasi dan testing semata</p>
-        </div>
-        
-        <div class="warning-box">
-            <strong><i class="fas fa-exclamation-triangle"></i> PERHATIAN PENTING:</strong>
-            Ini adalah SIMULATOR untuk belajar cara kerja OTP WhatsApp. 
-            Tidak mengirim OTP nyata, tidak terhubung ke server WhatsApp, 
-            dan tidak dapat memverifikasi akun asli.
-        </div>
-        
-        <div class="content">
-            <!-- Step 1: Input Nomor -->
-            <div class="step" id="step1">
-                <div class="step-title">
-                    <span class="step-number">1</span> Masukkan Nomor WhatsApp
-                </div>
-                <div class="form-group">
-                    <label for="countryCode">Kode Negara</label>
-                    <div class="phone-input">
-                        <div class="country-code">
-                            <select id="countryCode">
-                                <option value="62">Indonesia (+62)</option>
-                                <option value="1">USA (+1)</option>
-                                <option value="44">UK (+44)</option>
-                                <option value="91">India (+91)</option>
-                            </select>
-                        </div>
-                        <div style="flex: 1;">
-                            <input type="tel" id="phoneNumber" placeholder="81234567890" maxlength="15">
-                        </div>
-                    </div>
-                </div>
-                
-                <button class="btn" id="requestOtpBtn">
-                    <i class="fas fa-paper-plane"></i> Minta Kode OTP
-                </button>
-            </div>
-            
-            <!-- Step 2: OTP Display -->
-            <div class="otp-display" id="otpDisplay">
-                <div class="otp-label">Kode OTP untuk:</div>
-                <div id="targetNumber" style="font-weight: bold; margin-bottom: 20px;"></div>
-                
-                <div class="otp-code" id="otpCode">------</div>
-                
-                <div class="timer">
-                    <i class="fas fa-clock"></i> 
-                    Berlaku: <span class="timer-number" id="countdown">60</span> detik
-                </div>
-                
-                <div style="color: #666; font-size: 14px; margin-top: 20px;">
-                    <i class="fas fa-info-circle"></i> 
-                    Di aplikasi WhatsApp nyata, kode ini akan dikirim via SMS atau panggilan suara.
-                </div>
-                
-                <div class="form-group" style="margin-top: 25px;">
-                    <label>Masukkan Kode OTP untuk Verifikasi (Simulasi)</label>
-                    <input type="text" id="otpInput" placeholder="Masukkan 6 digit kode" maxlength="6">
-                    <button class="btn" id="verifyOtpBtn" style="margin-top: 15px;">
-                        <i class="fas fa-check-circle"></i> Verifikasi OTP
-                    </button>
-                </div>
-            </div>
-            
-            <!-- Step 3: Verification Result -->
-            <div class="verification-box" id="verificationResult">
-                <div class="verification-success">
-                    <i class="fas fa-check-circle"></i> Verifikasi Berhasil!
-                </div>
-                <p>Nomor WhatsApp <span id="verifiedNumber"></span> telah terverifikasi.</p>
-                <p style="margin-top: 10px; font-size: 14px; color: #666;">
-                    <i class="fas fa-lock"></i> Di sistem nyata, Anda sekarang bisa mengakses akun WhatsApp.
-                </p>
-            </div>
-            
-            <!-- Simulation Log -->
-            <div class="simulation-log">
-                <div class="log-title">
-                    <i class="fas fa-terminal"></i> Log Simulasi
-                </div>
-                <div id="logEntries">
-                    <!-- Log entries will appear here -->
-                </div>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p><strong>Hanya untuk Edukasi</strong> - Tidak terhubung dengan WhatsApp/Meta</p>
-            <p style="font-size: 12px; margin-top: 5px;">
-                Simulator ini menunjukkan bagaimana proses OTP bekerja tanpa mengakses sistem nyata.
-            </p>
-        </div>
-    </div>
-
-    <script>
-        // Elemen DOM
-        const requestOtpBtn = document.getElementById('requestOtpBtn');
-        const otpDisplay = document.getElementById('otpDisplay');
-        const verifyOtpBtn = document.getElementById('verifyOtpBtn');
-        const verificationResult = document.getElementById('verificationResult');
-        const logEntries = document.getElementById('logEntries');
-        
-        // Variabel state
-        let currentOtp = '';
-        let countdownInterval;
-        let verificationAttempts = 0;
-        
-        // Fungsi untuk log
-        function addLog(message, type = 'info') {
-            const entry = document.createElement('div');
-            entry.className = `log-entry log-${type}`;
-            const timestamp = new Date().toLocaleTimeString('id-ID', { 
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            entry.textContent = `[${timestamp}] ${message}`;
-            logEntries.prepend(entry);
-        }
-        
-        // Generate OTP 6 digit
-        function generateOTP() {
-            return Math.floor(100000 + Math.random() * 900000).toString();
-        }
-        
-        // Format nomor
-        function formatPhoneNumber(countryCode, phoneNumber) {
-            const cleaned = phoneNumber.replace(/\D/g, '');
-            return `+${countryCode}${cleaned}`;
-        }
-        
-        // Simulasi pengiriman OTP
-        function simulateOTPRequest() {
-            const countryCode = document.getElementById('countryCode').value;
-            const phoneNumber = document.getElementById('phoneNumber').value;
-            
-            if (!phoneNumber) {
-                alert('Masukkan nomor telepon terlebih dahulu');
-                return;
-            }
-            
-            // Generate OTP baru
-            currentOtp = generateOTP();
-            const formattedNumber = formatPhoneNumber(countryCode, phoneNumber);
-            
-            // Update UI
-            document.getElementById('targetNumber').textContent = formattedNumber;
-            document.getElementById('otpCode').textContent = currentOtp;
-            document.getElementById('verifiedNumber').textContent = formattedNumber;
-            
-            // Reset input
-            document.getElementById('otpInput').value = '';
-            
-            // Tampilkan OTP display
-            otpDisplay.style.display = 'block';
-            verificationResult.style.display = 'none';
-            
-            // Scroll ke OTP
-            otpDisplay.scrollIntoView({ behavior: 'smooth' });
-            
-            // Start countdown
-            startCountdown(60);
-            
-            // Log
-            addLog(`OTP ${currentOtp} dikirim ke ${formattedNumber} (SIMULASI)`, 'success');
-            addLog('Sistem: Mengirim permintaan OTP ke server WhatsApp...', 'info');
-            addLog('Server: OTP berhasil digenerate', 'info');
-            
-            // Simulasi delay jaringan
-            setTimeout(() => {
-                addLog('SMS Gateway: OTP berhasil dikirim ke nomor tujuan', 'success');
-            }, 1000);
-            
-            // Tambah attempt
-            verificationAttempts = 0;
-        }
-        
-        // Countdown timer
-        function startCountdown(seconds) {
-            let timeLeft = seconds;
-            const countdownElement = document.getElementById('countdown');
-            
-            // Clear existing interval
-            if (countdownInterval) {
-                clearInterval(countdownInterval);
-            }
-            
-            countdownInterval = setInterval(() => {
-                countdownElement.textContent = timeLeft;
-                timeLeft--;
-                
-                if (timeLeft < 0) {
-                    clearInterval(countdownInterval);
-                    document.getElementById('otpCode').style.opacity = '0.5';
-                    addLog('OTP telah kadaluarsa', 'error');
-                }
-            }, 1000);
-        }
-        
-        // Verifikasi OTP
-        function verifyOTP() {
-            const enteredOtp = document.getElementById('otpInput').value;
-            verificationAttempts++;
-            
-            if (!enteredOtp || enteredOtp.length !== 6) {
-                addLog('Kode OTP harus 6 digit', 'error');
-                alert('Masukkan 6 digit kode OTP');
-                return;
-            }
-            
-            // Simulasi verifikasi
-            if (enteredOtp === currentOtp) {
-                // Success
-                verificationResult.style.display = 'block';
-                verificationResult.style.backgroundColor = '#e8f5e9';
-                verificationResult.querySelector('.verification-success').innerHTML = 
-                    '<i class="fas fa-check-circle"></i> Verifikasi Berhasil!';
-                
-                addLog(`Verifikasi berhasil untuk OTP: ${enteredOtp}`, 'success');
-                addLog('Akun WhatsApp berhasil diverifikasi', 'success');
-                
-                // Simulasi akses data
-                setTimeout(() => {
-                    addLog('Sistem: Memuat kontak dan chat...', 'info');
-                }, 500);
-                
-                setTimeout(() => {
-                    addLog('Sistem: Akun siap digunakan', 'success');
-                }, 1500);
-                
-            } else {
-                // Failed
-                verificationResult.style.display = 'block';
-                verificationResult.style.backgroundColor = '#ffebee';
-                verificationResult.querySelector('.verification-success').innerHTML = 
-                    '<i class="fas fa-times-circle"></i> Kode OTP Salah!';
-                verificationResult.querySelector('.verification-success').style.color = '#c62828';
-                
-                addLog(`Verifikasi gagal. Kode salah: ${enteredOtp}`, 'error');
-                
-                // Simulasi keamanan
-                if (verificationAttempts >= 3) {
-                    addLog('KEAMANAN: Terlalu banyak percobaan gagal', 'error');
-                    alert('Terlalu banyak percobaan gagal. Coba lagi nanti.');
-                    requestOtpBtn.disabled = true;
-                    setTimeout(() => {
-                        requestOtpBtn.disabled = false;
-                        addLog('KEAMANAN: Sistem direset, coba lagi', 'info');
-                    }, 30000);
-                }
-            }
-            
-            // Scroll ke hasil
-            verificationResult.scrollIntoView({ behavior: 'smooth' });
-        }
-        
-        // Event Listeners
-        requestOtpBtn.addEventListener('click', simulateOTPRequest);
-        
-        verifyOtpBtn.addEventListener('click', verifyOTP);
-        
-        // Enter key untuk input OTP
-        document.getElementById('otpInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                verifyOTP();
-            }
-        });
-        
-        // Auto-fill contoh nomor
-        document.getElementById('phoneNumber').addEventListener('focus', function() {
-            if (!this.value) {
-                this.value = '81234567890';
-            }
-        });
-        
-        // Log awal
-        window.onload = function() {
-            addLog('Simulator OTP WhatsApp dimulai', 'info');
-            addLog('Sistem siap untuk simulasi', 'info');
-            
-            // Auto request contoh setelah 1 detik
-            setTimeout(() => {
-                simulateOTPRequest();
-            }, 1000);
-        };
-        
-        // Simulasi metode pengiriman alternatif
-        function simulateVoiceCall() {
-            addLog('Mengirim OTP via panggilan suara...', 'info');
-            setTimeout(() => {
-                addLog('Panggilan suara: OTP akan diucapkan oleh sistem', 'success');
-            }, 1500);
-        }
-        
-        // Tambah tombol untuk metode alternatif
-        setTimeout(() => {
-            const voiceBtn = document.createElement('button');
-            voiceBtn.className = 'btn';
-            voiceBtn.style.marginTop = '10px';
-            voiceBtn.style.backgroundColor = '#ff9800';
-            voiceBtn.innerHTML = '<i class="fas fa-phone"></i> Minta OTP via Panggilan Suara';
-            voiceBtn.onclick = simulateVoiceCall;
-            
-            const step1 = document.getElementById('step1');
-            step1.appendChild(voiceBtn);
-        }, 2000);
-    </script>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fab fa-whatsapp"></i>
+            </div>
+            <h1>OTP Real - OTP Dev</h1>
+            <p class="subtitle">Mengirim OTP beneran via API</p>
+        </div>
+        
+        <div class="warning-box">
+            <strong><i class="fas fa-exclamation-triangle"></i> PERINGATAN:</strong>
+            Ini akan mengirim OTP nyata ke nomor Anda menggunakan API OTP Dev. Pastikan nomor Anda aktif.
+        </div>
+        
+        <div class="content">
+            <!-- Step 1: Input Nomor -->
+            <div class="step" id="step1">
+                <div class="step-title">
+                    Masukkan Nomor WhatsApp
+                </div>
+                <div class="form-group">
+                    <label for="countryCode">Kode Negara</label>
+                    <div class="phone-input">
+                        <div class="country-code">
+                            <select id="countryCode">
+                                <option value="62">+62</option>
+                                <option value="1">+1</option>
+                                <option value="44">+44</option>
+                                <option value="91">+91</option>
+                            </select>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="tel" id="phoneNumber" placeholder="81234567890" maxlength="15">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="btn" id="requestOtpBtn">
+                    <i class="fas fa-paper-plane"></i> Minta Kode OTP
+                </button>
+            </div>
+            
+            <!-- Step 2: OTP Display -->
+            <div class="otp-display" id="otpDisplay">
+                <div class="otp-label">Kode OTP dikirim ke:</div>
+                <div id="targetNumber" style="font-weight: bold; margin-bottom: 20px;"></div>
+                
+                <div class="timer">
+                    <i class="fas fa-clock"></i> 
+                    Kode dikirim, cek HP Anda. <span id="countdown"></span>
+                </div>
+                
+                <div class="form-group" style="margin-top: 25px;">
+                    <label>Masukkan Kode OTP yang diterima</label>
+                    <input type="text" id="otpInput" placeholder="6 digit kode" maxlength="6">
+                    <button class="btn" id="verifyOtpBtn" style="margin-top: 15px;">
+                        <i class="fas fa-check-circle"></i> Verifikasi OTP
+                    </button>
+                    <button class="btn" id="resendBtn" style="margin-top: 10px; background: #ff9800;">
+                        <i class="fas fa-redo-alt"></i> Kirim Ulang
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Verification Result -->
+            <div class="verification-box" id="verificationResult">
+                <div class="verification-success" id="verificationMessage">
+                    <i class="fas fa-check-circle"></i> Verifikasi Berhasil!
+                </div>
+                <p id="verifiedInfo"></p>
+            </div>
+            
+            <!-- Log -->
+            <div class="simulation-log">
+                <div class="log-title">
+                    <i class="fas fa-terminal"></i> Log Real
+                </div>
+                <div id="logEntries"></div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Menggunakan API OTP Dev | Key: 3431a35f... (disamarkan)</p>
+        </div>
+    </div>
+    <script>
+        // ========== KONFIGURASI ==========
+        // GANTI DENGAN API KEY LO YANG ASLI (dari screenshot)
+        const API_KEY = '3431a35fb8162f7f81f722d03e18330f'; // <-- GANTI SINI
+        
+        // Base URL API OTP Dev (cek dokumentasi mereka)
+        const API_BASE = 'https://api.otp.dev/v1';
+        
+        // ========== ELEMEN DOM ==========
+        const requestBtn = document.getElementById('requestOtpBtn');
+        const otpDisplay = document.getElementById('otpDisplay');
+        const verifyBtn = document.getElementById('verifyOtpBtn');
+        const resendBtn = document.getElementById('resendBtn');
+        const verificationResult = document.getElementById('verificationResult');
+        const logEntries = document.getElementById('logEntries');
+        const targetNumberSpan = document.getElementById('targetNumber');
+        const countdownSpan = document.getElementById('countdown');
+        const otpInput = document.getElementById('otpInput');
+        const countryCode = document.getElementById('countryCode');
+        const phoneNumber = document.getElementById('phoneNumber');
+        
+        // ========== STATE ==========
+        let currentRequestId = null;
+        let currentPhone = '';
+        let timerInterval = null;
+        let timeLeft = 300; // 5 menit
+        
+        // ========== FUNGSI LOG ==========
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry log-${type}`;
+            const timestamp = new Date().toLocaleTimeString('id-ID', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            entry.textContent = `[${timestamp}] ${message}`;
+            logEntries.prepend(entry);
+        }
+        
+        // ========== FUNGSI FORMAT NOMOR ==========
+        function formatPhone(countryCode, number) {
+            const cleaned = number.replace(/\D/g, '');
+            return `+${countryCode}${cleaned}`;
+        }
+        
+        // ========== FUNGSI START TIMER ==========
+        function startTimer(seconds) {
+            if (timerInterval) clearInterval(timerInterval);
+            timeLeft = seconds;
+            updateTimer();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimer();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    countdownSpan.textContent = 'Kode kadaluarsa';
+                }
+            }, 1000);
+        }
+        function updateTimer() {
+            const mins = Math.floor(timeLeft / 60);
+            const secs = timeLeft % 60;
+            countdownSpan.textContent = `Berlaku: ${mins}:${secs.toString().padStart(2,'0')}`;
+        }
+        
+        // ========== FUNGSI KIRIM OTP ==========
+        async function sendOTP(isResend = false) {
+            const cc = countryCode.value;
+            const num = phoneNumber.value.trim();
+            if (!num) {
+                alert('Masukkan nomor telepon!');
+                return;
+            }
+            const phone = formatPhone(cc, num);
+            currentPhone = phone;
+            
+            // Tampilkan loading di tombol
+            requestBtn.disabled = true;
+            requestBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            if (isResend) {
+                resendBtn.disabled = true;
+                resendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Kirim ulang...';
+            }
+            
+            addLog(`Mengirim OTP ke ${phone}...`, 'info');
+            
+            try {
+                const response = await fetch(`${API_BASE}/otp/send`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        to: phone,
+                        channel: 'sms',
+                        ttl: 300
+                    })
+                });
+                
+                const data = await response.json();
+                addLog(`Response: ${response.status} ${JSON.stringify(data)}`, 'info');
+                
+                if (response.ok) {
+                    // Sukses, simpan request_id
+                    currentRequestId = data.request_id; // asumsikan ada field request_id
+                    addLog(`OTP berhasil dikirim. Request ID: ${currentRequestId}`, 'success');
+                    
+                    // Tampilkan step2
+                    otpDisplay.style.display = 'block';
+                    verificationResult.style.display = 'none';
+                    targetNumberSpan.textContent = phone;
+                    startTimer(300); // 5 menit
+                    
+                    if (!isResend) {
+                        // Hanya pertama kali
+                        requestBtn.style.display = 'none';
+                    } else {
+                        resendBtn.disabled = false;
+                        resendBtn.innerHTML = '<i class="fas fa-redo-alt"></i> Kirim Ulang';
+                    }
+                } else {
+                    // Gagal
+                    addLog(`Gagal: ${data.message || 'Unknown error'}`, 'error');
+                    alert(`Gagal kirim OTP: ${data.message || 'Cek konsol'}`);
+                    requestBtn.disabled = false;
+                    requestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Minta Kode OTP';
+                    if (isResend) {
+                        resendBtn.disabled = false;
+                        resendBtn.innerHTML = '<i class="fas fa-redo-alt"></i> Kirim Ulang';
+                    }
+                }
+            } catch (error) {
+                addLog(`Error: ${error.message}`, 'error');
+                alert('Network error. Mungkin CORS? Coba upload ke server.');
+                requestBtn.disabled = false;
+                requestBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Minta Kode OTP';
+                if (isResend) {
+                    resendBtn.disabled = false;
+                    resendBtn.innerHTML = '<i class="fas fa-redo-alt"></i> Kirim Ulang';
+                }
+            }
+        }
+        
+        // ========== FUNGSI VERIFIKASI OTP ==========
+        async function verifyOTP() {
+            const code = otpInput.value.trim();
+            if (!code || code.length !== 6) {
+                alert('Masukkan 6 digit kode');
+                return;
+            }
+            if (!currentRequestId) {
+                alert('Request ID tidak ditemukan. Minta OTP dulu!');
+                return;
+            }
+            
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memverifikasi...';
+            
+            try {
+                const response = await fetch(`${API_BASE}/otp/verify`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${API_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        request_id: currentRequestId,
+                        code: code
+                    })
+                });
+                
+                const data = await response.json();
+                addLog(`Verify response: ${response.status}`, 'info');
+                
+                if (response.ok && data.valid) { // asumsikan field valid
+                    addLog('✅ Verifikasi sukses!', 'success');
+                    verificationResult.style.display = 'block';
+                    verificationResult.querySelector('#verificationMessage').innerHTML = '<i class="fas fa-check-circle"></i> Verifikasi Berhasil!';
+                    verificationResult.querySelector('#verifiedInfo').innerHTML = `Nomor ${currentPhone} terverifikasi.`;
+                    otpDisplay.style.display = 'none';
+                    clearInterval(timerInterval);
+                } else {
+                    addLog('❌ Kode salah', 'error');
+                    alert('Kode OTP salah!');
+                }
+            } catch (error) {
+                addLog(`Error: ${error.message}`, 'error');
+                alert('Network error saat verifikasi.');
+            } finally {
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = '<i class="fas fa-check-circle"></i> Verifikasi OTP';
+            }
+        }
+        
+        // ========== EVENT LISTENER ==========
+        requestBtn.addEventListener('click', () => sendOTP(false));
+        resendBtn.addEventListener('click', () => sendOTP(true));
+        verifyBtn.addEventListener('click', verifyOTP);
+        
+        otpInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') verifyOTP();
+        });
+        
+        // ========== INIT LOG ==========
+        addLog('Sistem siap. Masukkan nomor dan kirim OTP.', 'info');
+        addLog(`Menggunakan API Key: ${API_KEY.slice(0,8)}...`, 'info');
+    </script>
 </body>
 </html>
